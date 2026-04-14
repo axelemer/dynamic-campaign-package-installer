@@ -1,5 +1,3 @@
-# dynamic-campaign-package-installer
-
 # CETAV Dynamic Campaign - Hook Installer
 
 ![CETAV Banner](cetav-logo.png)

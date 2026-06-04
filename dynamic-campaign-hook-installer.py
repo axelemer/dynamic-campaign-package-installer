@@ -12,23 +12,33 @@ LOGO_FILE = "cetav-isologo.png"
 TEXTS = {
     "en": {
         "title": "CETAV Dynamic Campaign Package Installer",
-        "welcome": "Select the DCS installation folder:",
+        "welcome": "Select the DCS Saved Games folder in your user profile:",
         "browse": "Browse",
         "install": "Install",
         "back": "← Change Language",
         "success": "Installation complete!",
         "error": "Error during installation.",
-        "invalid": "Please select a valid folder."
+        "invalid": "Please select a valid folder.",
+        "wrong_folder_title": "Folder not recognized",
+        "wrong_folder_msg": (
+            "This may not be the correct DCS Saved Games folder.\n\n"
+            "Do you want to continue anyway?"
+        )
     },
     "es": {
         "title": "Instalador de paquete para campaña dinámica de CETAV",
-        "welcome": "Selecciona la carpeta de instalación de DCS:",
+        "welcome": "Seleccione la carpeta de Juegos guardados de DCS en su perfil de usuario:",
         "browse": "Buscar",
         "install": "Instalar",
         "back": "← Cambiar Idioma",
         "success": "¡Instalación completada!",
         "error": "Error durante la instalación.",
-        "invalid": "Por favor, selecciona una carpeta válida."
+        "invalid": "Por favor, selecciona una carpeta válida.",
+        "wrong_folder_title": "Carpeta no reconocida",
+        "wrong_folder_msg": (
+            "Es posible que no sea la carpeta de Juegos guardados de DCS correcta.\n\n"
+            "¿Desea continuar de todas formas?"
+        )
     }
 }
 
@@ -141,11 +151,23 @@ class InstallerApp:
             self.path_var.set(path)
 
     def run_install(self):
+        if not self.lang:
+            return
         dest_path = self.path_var.get()
 
         if not dest_path or not os.path.exists(dest_path):
             messagebox.showwarning("!", TEXTS[self.lang]["invalid"])
             return
+
+        hooks_check = os.path.join(dest_path, "Scripts", "Hooks")
+        if not os.path.exists(hooks_check):
+            proceed = messagebox.askyesno(
+                TEXTS[self.lang]["wrong_folder_title"],
+                TEXTS[self.lang]["wrong_folder_msg"],
+                icon="warning"
+            )
+            if not proceed:
+                return
 
         try:
             hooks_path = os.path.join(dest_path, "Scripts", "Hooks")
